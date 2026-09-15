@@ -1,7 +1,10 @@
 // Versión refactorizada usando la API nativa fetch() para la rama "fetch"
 
-const API_KEY = import.meta.env.VITE_OMDB_API_KEY || '38c3aa89'
 const BASE_URL = 'https://www.omdbapi.com/'
+
+const getApiKey = () => {
+  return import.meta.env.VITE_OMDB_API_KEY || '4b6056c8'
+}
 
 const mockMovies = [
   {
@@ -111,9 +114,11 @@ export async function searchMovies({ query, type = '', year = '' }) {
     throw new Error('El término de búsqueda debe tener al menos 2 caracteres.')
   }
 
+  const apiKey = getApiKey()
+
   try {
     const url = new URL(BASE_URL)
-    url.searchParams.append('apikey', API_KEY)
+    url.searchParams.append('apikey', apiKey)
     url.searchParams.append('s', query.trim())
 
     if (type) url.searchParams.append('type', type)
@@ -169,9 +174,11 @@ export async function getMovieDetails(imdbId) {
     throw new Error('ID de película no proporcionado.')
   }
 
+  const apiKey = getApiKey()
+
   try {
     const url = new URL(BASE_URL)
-    url.searchParams.append('apikey', API_KEY)
+    url.searchParams.append('apikey', apiKey)
     url.searchParams.append('i', imdbId)
     url.searchParams.append('plot', 'full')
 

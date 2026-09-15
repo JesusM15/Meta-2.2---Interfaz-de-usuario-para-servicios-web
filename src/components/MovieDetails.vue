@@ -2,27 +2,29 @@
   <v-dialog
     :model-value="modelValue"
     max-width="850"
+    width="94vw"
     scrollable
     transition="dialog-bottom-transition"
     @update:model-value="val => $emit('update:modelValue', val)"
   >
     <v-card class="rounded-2xl overflow-hidden" color="surface">
       <!-- Carga dentro del modal -->
-      <div v-if="loading" class="pa-12 text-center">
+      <div v-if="loading" class="pa-8 pa-sm-12 text-center">
         <v-progress-circular indeterminate color="primary" size="64" width="6"></v-progress-circular>
-        <div class="mt-4 text-h6 text-grey-lighten-1">Cargando detalles de la película...</div>
+        <div class="mt-4 text-subtitle-1 text-sm-h6 text-grey-lighten-1">Cargando detalles de la película...</div>
       </div>
 
       <template v-else-if="movie">
         <!-- Header con botón cerrar -->
-        <v-card-title class="d-flex align-center justify-space-between pa-4 bg-surface-bright">
+        <v-card-title class="d-flex align-center justify-space-between pa-3 pa-sm-4 bg-surface-bright">
           <div class="d-flex align-center text-truncate">
-            <v-icon icon="mdi-movie-open" color="primary" class="mr-2"></v-icon>
-            <span class="text-h6 font-weight-bold text-truncate">{{ movie.Title }}</span>
+            <v-icon icon="mdi-movie-open" color="primary" class="mr-2" size="20"></v-icon>
+            <span class="text-subtitle-1 text-sm-h6 font-weight-bold text-truncate">{{ movie.Title }}</span>
           </div>
           <v-btn
             icon="mdi-close"
             variant="text"
+            size="small"
             color="grey-lighten-1"
             @click="onClose"
           ></v-btn>
@@ -30,16 +32,16 @@
 
         <v-divider></v-divider>
 
-        <v-card-text class="pa-6">
-          <v-row>
+        <v-card-text class="pa-4 pa-sm-6">
+          <v-row dense>
             <!-- Columna Póster -->
-            <v-col cols="12" sm="5" md="4" class="text-center">
+            <v-col cols="12" sm="5" md="4" class="text-center mb-4 mb-sm-0">
               <v-img
                 :src="isValidPoster(movie.Poster) ? movie.Poster : fallbackPoster"
                 alt="Póster"
                 max-height="420"
                 cover
-                class="rounded-xl elevation-6 mb-4"
+                class="rounded-xl elevation-6 mb-3 mx-auto max-poster-width"
               ></v-img>
 
               <!-- Chips de metadatos rápidos -->
@@ -56,7 +58,7 @@
             <!-- Columna Detalles completos -->
             <v-col cols="12" sm="7" md="8">
               <!-- Rating IMDb -->
-              <div class="d-flex align-center mb-4 bg-surface-bright pa-3 rounded-xl ga-4">
+              <div class="d-flex align-center mb-4 bg-surface-bright pa-3 rounded-xl ga-3 flex-wrap">
                 <div class="d-flex align-center">
                   <v-icon icon="mdi-star" color="amber-accent-4" size="large" class="mr-1"></v-icon>
                   <span class="text-h5 font-weight-bold text-amber-accent-4">
@@ -64,7 +66,7 @@
                   </span>
                   <span class="text-caption text-grey ml-1">/10</span>
                 </div>
-                <v-divider vertical inset></v-divider>
+                <v-divider vertical inset class="d-none d-sm-block"></v-divider>
                 <div class="text-caption text-grey">
                   <div>Votos: <strong>{{ movie.imdbVotes || 'N/A' }}</strong></div>
                 </div>
@@ -89,7 +91,7 @@
               <!-- Sinopsis -->
               <div class="mb-4">
                 <div class="text-caption text-uppercase font-weight-bold text-primary mb-1">Sinopsis</div>
-                <p class="text-body-1 text-grey-lighten-2 leading-relaxed">
+                <p class="text-body-2 text-sm-body-1 text-grey-lighten-2 leading-relaxed">
                   {{ movie.Plot || 'Sin descripción disponible.' }}
                 </p>
               </div>
@@ -129,13 +131,25 @@
         <v-divider></v-divider>
 
         <!-- Botón para cerrar -->
-        <v-card-actions class="pa-4 justify-end bg-surface-bright">
+        <v-card-actions class="pa-3 pa-sm-4 justify-end bg-surface-bright">
+          <v-btn
+            color="primary"
+            variant="elevated"
+            size="large"
+            block
+            class="d-sm-none rounded-lg text-capitalize"
+            prepend-icon="mdi-close"
+            @click="onClose"
+          >
+            Cerrar Detalle
+          </v-btn>
+
           <v-btn
             color="primary"
             variant="elevated"
             size="large"
             prepend-icon="mdi-close"
-            class="rounded-lg text-capitalize px-6"
+            class="d-none d-sm-flex rounded-lg text-capitalize px-6"
             @click="onClose"
           >
             Cerrar Detalle
@@ -184,5 +198,9 @@ const onClose = () => {
 <style scoped>
 .leading-relaxed {
   line-height: 1.6;
+}
+
+.max-poster-width {
+  max-width: 280px;
 }
 </style>

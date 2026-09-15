@@ -1,11 +1,11 @@
 <template>
-  <v-card class="search-card pa-4 mb-6 rounded-xl elevation-6" color="surface">
-    <v-card-title class="d-flex align-center text-h6 font-weight-bold text-primary pb-3">
+  <v-card class="search-card pa-3 pa-sm-5 mb-6 rounded-2xl elevation-6" color="surface">
+    <v-card-title class="d-flex align-center text-subtitle-1 text-sm-h6 font-weight-bold text-primary pb-3 px-1">
       <v-icon icon="mdi-filmstrip" class="mr-2" color="primary"></v-icon>
       Buscador de Películas y Series
     </v-card-title>
     
-    <v-card-text>
+    <v-card-text class="px-1">
       <v-form ref="form" v-model="isFormValid" @submit.prevent="onSearch">
         <v-row dense align="center">
           <!-- Campo de búsqueda por título -->
@@ -59,14 +59,13 @@
             ></v-text-field>
           </v-col>
 
-          <!-- Botones de Acción -->
+          <!-- Botones de Acción Responsivos -->
           <v-col cols="12" md="2" class="d-flex ga-2 pt-2 pt-md-0">
             <v-btn
               color="primary"
               variant="elevated"
               size="large"
-              block
-              class="text-capitalize font-weight-bold rounded-lg"
+              class="flex-grow-1 text-capitalize font-weight-bold rounded-lg"
               prepend-icon="mdi-magnify"
               :disabled="!searchQuery || searchQuery.trim().length < 2"
               @click="onSearch"
@@ -115,7 +114,7 @@ const rules = {
     v => (v && v.trim().length >= 2) || 'El término debe tener al menos 2 caracteres'
   ],
   year: [
-    v => !v || /^\d{4}$/.test(v) || 'El año debe ser un número de 4 dígitos'
+    v => !v || /^\d{4}$/.test(v) || 'El año debe ser de 4 dígitos'
   ]
 }
 

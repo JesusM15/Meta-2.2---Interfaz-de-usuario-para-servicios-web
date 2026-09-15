@@ -1,7 +1,7 @@
 <template>
   <div class="movie-list-container">
-    <div v-if="totalResults" class="d-flex align-center justify-space-between mb-4">
-      <div class="text-subtitle-1 text-grey-lighten-1">
+    <div v-if="totalResults" class="d-flex align-center justify-space-between mb-4 px-1">
+      <div class="text-caption text-sm-subtitle-1 text-grey-lighten-1">
         Se encontraron <strong class="text-primary">{{ totalResults }}</strong> resultados
       </div>
     </div>
@@ -14,21 +14,21 @@
         sm="6"
         md="4"
         lg="3"
-        class="d-flex"
+        class="d-flex pa-2"
       >
         <v-card
-          class="movie-card d-flex flex-column flex-grow-1 rounded-xl overflow-hidden"
+          class="movie-card d-flex flex-column flex-grow-1 rounded-2xl overflow-hidden"
           elevation="4"
           color="surface"
           hover
           @click="$emit('select-movie', movie.imdbID)"
         >
-          <!-- Póster con fallback -->
+          <!-- Póster Responsivo -->
           <div class="poster-wrapper">
             <v-img
               :src="isValidPoster(movie.Poster) ? movie.Poster : fallbackPoster"
               alt="Póster de la película"
-              height="340"
+              height="350"
               cover
               class="bg-grey-darken-3"
             >
@@ -51,17 +51,17 @@
 
           <!-- Contenido de la Tarjeta -->
           <v-card-item class="flex-grow-1 pb-1">
-            <v-card-title class="text-h6 font-weight-bold line-clamp-2 text-wrap mb-1" :title="movie.Title">
+            <v-card-title class="text-subtitle-1 text-sm-h6 font-weight-bold line-clamp-2 text-wrap mb-1" :title="movie.Title">
               {{ movie.Title }}
             </v-card-title>
-            <v-card-subtitle class="d-flex align-center text-body-2 text-grey-lighten-1">
+            <v-card-subtitle class="d-flex align-center text-caption text-sm-body-2 text-grey-lighten-1">
               <v-icon icon="mdi-calendar-range" size="small" class="mr-1" color="primary"></v-icon>
               {{ movie.Year }}
             </v-card-subtitle>
           </v-card-item>
 
           <!-- Acciones de la Tarjeta -->
-          <v-card-actions class="pa-4 pt-0">
+          <v-card-actions class="pa-3 pt-0">
             <v-btn
               color="primary"
               variant="tonal"
@@ -102,7 +102,7 @@ const isValidPoster = (posterUrl) => {
 <style scoped>
 .movie-card {
   transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s ease;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .movie-card:hover {
