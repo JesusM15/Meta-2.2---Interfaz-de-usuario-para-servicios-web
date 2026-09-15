@@ -1,21 +1,11 @@
-import axios from 'axios'
+// Versión refactorizada usando la API nativa fetch() para la rama "fetch"
 
 const BASE_URL = 'https://www.omdbapi.com/'
 
-// Función helper para obtener la API key dinámica des de .env
 const getApiKey = () => {
   return import.meta.env.VITE_OMDB_API_KEY || '4b6056c8'
 }
 
-// Instancia de Axios configurada
-const movieClient = axios.create({
-  baseURL: BASE_URL,
-  timeout: 10000
-})
-
-/**
- * Datos mock de respaldo para garantizar funcionamiento ininterrumpido en pruebas
- */
 const mockMovies = [
   {
     Title: "The Dark Knight",
@@ -119,9 +109,6 @@ const mockMovies = [
   }
 ]
 
-/**
- * Buscar películas en la API OMDb usando Axios
- */
 export async function searchMovies({ query, type = '', year = '' }) {
   if (!query || query.trim().length < 2) {
     throw new Error('El término de búsqueda debe tener al menos 2 caracteres.')
@@ -130,20 +117,25 @@ export async function searchMovies({ query, type = '', year = '' }) {
   const apiKey = getApiKey()
 
   try {
-    const params = {
-      apikey: apiKey,
-      s: query.trim()
+    const url = new URL(BASE_URL)
+    url.searchParams.append('apikey', apiKey)
+    url.searchParams.append('s', query.trim())
+
+    if (type) url.searchParams.append('type', type)
+    if (year) url.searchParams.append('y', year)
+
+    const response = await fetch(url.toString())
+
+    if (!response.ok) {
+      throw new Error(`Error HTTP: ${response.status}`)
     }
 
-    if (type) params.type = type
-    if (year) params.y = year
+    const data = await response.json()
 
-    const response = await movieClient.get('', { params })
-
-    if (response.data.Response === 'True') {
+    if (data.Response === 'True') {
       return {
-        Search: response.data.Search,
-        totalResults: response.data.totalResults
+        Search: data.Search,
+        totalResults: data.totalResults
       }
     } else {
       const lowerQuery = query.toLowerCase()
@@ -161,7 +153,7 @@ export async function searchMovies({ query, type = '', year = '' }) {
         }
       }
 
-      throw new Error(response.data.Error || 'No se encontraron resultados para tu búsqueda.')
+      throw new Error(data.Error || 'No se encontraron resultados para tu búsqueda.')
     }
   } catch (error) {
     const lowerQuery = query.toLowerCase()
@@ -173,19 +165,10 @@ export async function searchMovies({ query, type = '', year = '' }) {
       }
     }
 
-    if (error.response) {
-      throw new Error(`Error en la API (${error.response.status}): ${error.response.statusText}`)
-    } else if (error.request) {
-      throw new Error('Error de conexión a internet o la API de OMDb no responde.')
-    } else {
-      throw new Error(error.message || 'Ocurrió un error inesperado al realizar la búsqueda.')
-    }
+    throw new Error(error.message || 'Ocurrió un error al realizar la búsqueda con fetch.')
   }
 }
 
-/**
- * Obtener detalles completos de una película por su ID de IMDb
- */
 export async function getMovieDetails(imdbId) {
   if (!imdbId) {
     throw new Error('ID de película no proporcionado.')
@@ -194,25 +177,30 @@ export async function getMovieDetails(imdbId) {
   const apiKey = getApiKey()
 
   try {
-    const response = await movieClient.get('', {
-      params: {
-        apikey: apiKey,
-        i: imdbId,
-        plot: 'full'
-      }
-    })
+    const url = new URL(BASE_URL)
+    url.searchParams.append('apikey', apiKey)
+    url.searchParams.append('i', imdbId)
+    url.searchParams.append('plot', 'full')
 
-    if (response.data.Response === 'True') {
-      return response.data
+    const response = await fetch(url.toString())
+
+    if (!response.ok) {
+      throw new Error(`Error HTTP: ${response.status}`)
+    }
+
+    const data = await response.json()
+
+    if (data.Response === 'True') {
+      return data
     } else {
       const foundMock = mockMovies.find(m => m.imdbID === imdbId)
       if (foundMock) return foundMock
-      throw new Error(response.data.Error || 'No se pudieron cargar los detalles de la película.')
+      throw new Error(data.Error || 'No se pudieron obtener los detalles con fetch.')
     }
   } catch (error) {
     const foundMock = mockMovies.find(m => m.imdbID === imdbId)
     if (foundMock) return foundMock
 
-    throw new Error(error.message || 'Error al obtener los detalles de la película.')
+    throw new Error(error.message || 'Error al obtener los detalles de la película con fetch.')
   }
 }
