@@ -1,16 +1,16 @@
 import axios from 'axios'
 
-// Configuración de API Key desde .env o fallback público
-const API_KEY = import.meta.env.VITE_OMDB_API_KEY || '38c3aa89'
 const BASE_URL = 'https://www.omdbapi.com/'
+
+// Función helper para obtener la API key dinámica des de .env
+const getApiKey = () => {
+  return import.meta.env.VITE_OMDB_API_KEY || '4b6056c8'
+}
 
 // Instancia de Axios configurada
 const movieClient = axios.create({
   baseURL: BASE_URL,
-  timeout: 10000,
-  headers: {
-    'Content-Type': 'application/json'
-  }
+  timeout: 10000
 })
 
 /**
@@ -121,17 +121,17 @@ const mockMovies = [
 
 /**
  * Buscar películas en la API OMDb usando Axios
- * @param {Object} params - Objeto con query, type, year
- * @returns {Promise<Object>} Resultado con lista de películas y total
  */
 export async function searchMovies({ query, type = '', year = '' }) {
   if (!query || query.trim().length < 2) {
     throw new Error('El término de búsqueda debe tener al menos 2 caracteres.')
   }
 
+  const apiKey = getApiKey()
+
   try {
     const params = {
-      apikey: API_KEY,
+      apikey: apiKey,
       s: query.trim()
     }
 
@@ -185,18 +185,18 @@ export async function searchMovies({ query, type = '', year = '' }) {
 
 /**
  * Obtener detalles completos de una película por su ID de IMDb
- * @param {string} imdbId - ID de IMDb (ej: tt0468569)
- * @returns {Promise<Object>} Objeto con los detalles de la película
  */
 export async function getMovieDetails(imdbId) {
   if (!imdbId) {
     throw new Error('ID de película no proporcionado.')
   }
 
+  const apiKey = getApiKey()
+
   try {
     const response = await movieClient.get('', {
       params: {
-        apikey: API_KEY,
+        apikey: apiKey,
         i: imdbId,
         plot: 'full'
       }
